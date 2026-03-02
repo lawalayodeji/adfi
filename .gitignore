@@ -29,3 +29,6 @@ yarn-error.log*
 
 # Prisma
 prisma/dev.db
+
+#docx
+.docx
