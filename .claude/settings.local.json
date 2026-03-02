@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\(''docx''\\)\")",
+      "Bash(npm install docx --save-dev)",
+      "Bash(node scripts/generate-docs.mjs)",
+      "Bash(node scripts/generate-user-guide.mjs)",
+      "Bash(npx prisma db push)",
+      "Bash(node -e \"console.log\\(require\\(''crypto''\\).randomBytes\\(32\\).toString\\(''base64''\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\(''crypto''\\).randomBytes\\(24\\).toString\\(''base64''\\)\\)\")"
+    ]
+  }
+}

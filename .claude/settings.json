@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "d:\\workstation\\Ads-for-adfi\\src\\components\\links"
+    ],
+    "allow": [
+      "Bash(npx tsc --noEmit)"
+    ]
+  }
+}
