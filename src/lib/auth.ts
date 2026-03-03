@@ -32,13 +32,16 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ user, account }) {
-      // Store the refresh token for Google Ads API
-      // Use updateMany so it silently skips if the user row isn't created yet
-      if (account?.provider === "google" && account.refresh_token && user.id) {
-        await prisma.user.updateMany({
-          where: { id: user.id },
-          data: { googleRefreshToken: account.refresh_token },
-        });
+      // Store the refresh token for Google Ads API (non-critical — never block sign-in)
+      try {
+        if (account?.provider === "google" && account.refresh_token && user.id) {
+          await prisma.user.updateMany({
+            where: { id: user.id },
+            data: { googleRefreshToken: account.refresh_token },
+          });
+        }
+      } catch (_) {
+        // Ignore — user can still sign in without the refresh token
       }
       return true;
     },
