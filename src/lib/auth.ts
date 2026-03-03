@@ -25,12 +25,27 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      try {
-        if (session.user && user?.id) {
-          (session.user as any).id = user.id;
-        }
-      } catch (_) {}
+    async jwt({ token, user, account }) {
+      // On first sign-in, persist user ID + refresh token into the JWT
+      if (user) {
+        token.id = user.id;
+      }
+      if (account?.refresh_token && user?.id) {
+        token.refreshToken = account.refresh_token;
+        // Persist refresh token to DB (non-critical)
+        try {
+          await prisma.user.update({
+            where: { id: user.id as string },
+            data: { googleRefreshToken: account.refresh_token },
+          });
+        } catch (_) {}
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && token?.id) {
+        (session.user as any).id = token.id as string;
+      }
       return session;
     },
   },
@@ -39,6 +54,6 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   session: {
-    strategy: "database",
+    strategy: "jwt",
   },
 };
