@@ -1,5 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prisma";
 
@@ -21,6 +22,31 @@ export const authOptions: NextAuthOptions = {
           access_type: "offline",
           prompt: "consent",
         },
+      },
+    }),
+    CredentialsProvider({
+      name: "Email & Password",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        if (
+          credentials.email !== process.env.ADMIN_EMAIL ||
+          credentials.password !== process.env.ADMIN_PASSWORD
+        ) return null;
+
+        // Find or create the admin user in DB
+        let user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+        if (!user) {
+          user = await prisma.user.create({
+            data: { email: credentials.email, name: "Admin" },
+          });
+        }
+        return { id: user.id, email: user.email, name: user.name };
       },
     }),
   ],
