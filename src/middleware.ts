@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protect dashboard routes
-  const publicPaths = ["/login", "/api/auth", "/api/track", "/api/postback", "/go"];
+  const publicPaths = ["/login", "/register", "/api/auth", "/api/register", "/api/track", "/api/postback", "/go"];
   const isPublic = publicPaths.some((p) => pathname.startsWith(p));
 
   if (!isPublic) {

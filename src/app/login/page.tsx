@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LoginButton } from "@/components/auth/login-button";
 import { LoginForm } from "@/components/auth/login-form";
 import { Zap } from "lucide-react";
+import Link from "next/link";
 
 export default async function LoginPage() {
   const session = await getServerSession(authOptions);
@@ -37,6 +38,13 @@ export default async function LoginPage() {
 
         <p className="text-center text-xs text-muted-foreground">
           Google sign-in also grants Google Ads API access.
+        </p>
+
+        <p className="text-center text-sm text-muted-foreground">
+          No account?{" "}
+          <Link href="/register" className="font-medium text-primary hover:underline">
+            Create one
+          </Link>
         </p>
       </div>
     </div>
