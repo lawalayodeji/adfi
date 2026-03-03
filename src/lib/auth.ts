@@ -32,8 +32,9 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ user, account }) {
       // Store the refresh token for Google Ads API
-      if (account?.provider === "google" && account.refresh_token) {
-        await prisma.user.update({
+      // Use updateMany so it silently skips if the user row isn't created yet
+      if (account?.provider === "google" && account.refresh_token && user.id) {
+        await prisma.user.updateMany({
           where: { id: user.id },
           data: { googleRefreshToken: account.refresh_token },
         });
